@@ -29,9 +29,6 @@ const Task = (
     }
   ) => {
 
-    console.log(task)
-  
-    //https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task/{task_id}/complete
   const completeTaskHandler = () => {
     fetch(`https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task/${task.id}/complete`, {
       method: 'PUT',

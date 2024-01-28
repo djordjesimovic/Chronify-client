@@ -68,6 +68,15 @@ const usersMain = (
         setEditingUserId={setEditingUserId}
         getTasksForLoggedInUser={getTasksForLoggedInUser}
         getAllTasks={getAllTasks}
+        firstName={firstName}
+        setFirstName={setFirstName}
+        lastName={lastName}
+        setLastName={setLastName}
+        username={username}
+        setUsername={setUsername}
+        email={email}
+        setEmail={setEmail}
+
       />
       <CreateUser
         createUserModal={createUserModal}

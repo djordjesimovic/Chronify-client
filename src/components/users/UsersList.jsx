@@ -14,7 +14,15 @@ const usersList = (
     editingUserId, 
     setEditingUserId,
     getTasksForLoggedInUser,
-    getAllTasks
+    getAllTasks,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    username,
+    setUsername,
+    email,
+    setEmail
   }) => {
   return (
     <div className='flex flex-wrap flex-row sm:flex-row md:flex-row lg:flex-row justify-center items-center w-full h-full mt-2  gap-7'>
@@ -33,6 +41,14 @@ const usersList = (
             setEditingUserId={setEditingUserId}
             getTasksForLoggedInUser={getTasksForLoggedInUser}
             getAllTasks={getAllTasks}
+            firstName={firstName}
+            setFirstName={setFirstName}
+            lastName={lastName}
+            setLastName={setLastName}
+            username={username}
+            setUsername={setUsername}
+            email={email}
+            setEmail={setEmail}
           />
         ) : 
         <span>There are no users</span>

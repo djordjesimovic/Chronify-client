@@ -101,6 +101,7 @@ const CreateUser = (
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('UserToken')
           },
           body: JSON.stringify(updatedUser)
       }).then(res => res.json())

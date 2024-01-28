@@ -14,7 +14,15 @@ const User = (
     editingUserId, 
     setEditingUserId,
     getTasksForLoggedInUser,
-    getAllTasks
+    getAllTasks,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    username,
+    setUsername,
+    email,
+    setEmail,
   }
   ) => {
 
@@ -47,7 +55,10 @@ const User = (
     setUserModalState('edit');
     setCreateUserModal(true)
     setEditingUserId(user.id);
-    console.log(user.id)
+    setFirstName(user.firstName);
+    setLastName(user.lastName);
+    setUsername(user.username);
+    setEmail(user.email);
   }
 
 
@@ -82,9 +93,12 @@ const User = (
           <button onClick={editUser}>
             <img className='w-5' src={editIcon} alt='edit icon' />
           </button>
-          <button onClick={deleteUser}>
-            <img className='w-5' src={deleteIcon} alt='edit icon' />
-          </button>
+          {
+            user.id.toString() === localStorage.getItem('userId') ? null :
+            <button onClick={deleteUser}>
+              <img className='w-5' src={deleteIcon} alt='edit icon' />
+            </button>
+          }
         </div> : null
       }
     </div>
