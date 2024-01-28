@@ -135,7 +135,7 @@ const TaskModal = (
 
     return (
         <div className={`${modalVisible === true ? "font-nunito absolute top-0 left-0 flex justify-center items-center w-full h-full" : 'hidden'}`}>
-            <div className="relative border-solid border rounded-2xl border-gray-200  shadow-xl flex flex-col gap-3 px-4 py-40 justify-center items-center w-5/12 h-86 bg-white">
+            <div className="relative border-solid border rounded-2xl border-gray-200  shadow-xl flex flex-col gap-3 px-4 py-40 justify-center items-center w-10/12 h-86 lg:w-5/12 lg:h-86 bg-white">
                 <div className='flex flex-row justify-between items-center w-full gap-1 text-sm'>
                     <label className='w-1/4 text-xs' htmlFor='task'>Insert your Task</label>
                     <input required={true} className='border-gray-200 border-solid border w-3/4 outline-0 p-1' type="text" name='task' value={currentTask} onChange={(e) => setCurrentTask(e.target.value)} />
@@ -168,7 +168,7 @@ const TaskModal = (
                     </select>
                 </div>
                 <div className='flex flex-row justify-center gap-7 items-center w-full mt-5'>
-                    <button onClick={handleTask} className='px-3 py-2 bg-blue-700 text-white'>{taskModalState === 'create' ? "Create task" : "Edit task"}</button>
+                    <button onClick={handleTask} className='px-3 py-2 bg-green-600 text-white'>{taskModalState === 'create' ? "Create task" : "Edit task"}</button>
                     <button onClick={closeModal} className='px-3 py-2 bg-red-700 text-white'>Close</button>
                 </div>
                 <span className={`${taskCreated === true ? "flex text-green-500" : taskCreated === false ? "flex text-red-500" : "hidden"}`}>{errorMsg}</span>

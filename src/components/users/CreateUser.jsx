@@ -128,7 +128,7 @@ const CreateUser = (
 
   return (
     <div className={`${createUserModal === true ? "flex w-full h-full justify-center items-center font-nunito absolute top-0 left-0" : "hidden"}`}>
-      <div className="relative border-solid border rounded-2xl border-gray-200  shadow-xl flex flex-col gap-3 px-4 py-40 justify-center items-center w-5/12 h-96 bg-white">
+      <div className="relative border-solid border rounded-2xl border-gray-200  shadow-xl flex flex-col gap-3 px-4 py-40 justify-center items-center w-10/12 h-96 lg:w-5/12 lg:h-96 bg-white">
         <div className='flex flex-row justify-between items-center w-full'>
           <span className='w-1/4 text-sm font-bold'>First Name</span>
           <input required={true} type='text' value={firstName} onChange={(e) => setFirstName(e.target.value)} className='border-gray-200 border-solid border w-3/4 outline-0 p-1' />
@@ -161,7 +161,7 @@ const CreateUser = (
           </select>
         </div>
         <div className='flex flex-row justify-center gap-7 items-center w-full mt-5'>
-          <button onClick={registerUser} className='px-3 py-2 bg-blue-700 text-white'>{userModalState === 'create' ? "Create user" : "Edit user"}</button>
+          <button onClick={registerUser} className='px-3 py-2 bg-green-600 text-white'>{userModalState === 'create' ? "Create user" : "Edit user"}</button>
           <button onClick={closeRegisterModal} className='px-3 py-2 bg-red-700 text-white'>Close</button>
         </div>
         <span className={`text-xs font-bold ${registerStatus === true ? "text-green-500" : "text-red-500"}`}>{registerMsg}</span>
