@@ -45,7 +45,7 @@ const Login = ({userType, setUserType, loggedUser, setLoggedUser}) => {
   return (
     <div className='flex justify-center items-center w-full h-full flex-col gap-4 font-roboto bg-light-black'>
       <img src={logo} alt="logo" className='w-56' />
-      <div className='flex flex-col w-1/3 p-3 gap-4 items-center'>
+      <div className='flex flex-col w-full md:w-full lg:w-1/3 p-3 gap-4 items-center'>
         <input className='outline-0 p-2 w-full border-solid border-inherit border-2' type="text" placeholder='user' value={user} onChange={e => setUser(e.target.value)}/>
         <input className='outline-0 p-2 w-full border-solid border-inherit border-2' type="password" placeholder='password' value={password} onChange={e => setPassword(e.target.value)} />
         <span className='text-red-500'>{loginSuccess === false ? 'Wrong username or password' : ''}</span>
