@@ -12,24 +12,32 @@ const User = (
     createUserModal, 
     setCreateUserModal, 
     editingUserId, 
-    setEditingUserId
+    setEditingUserId,
+    getTasksForLoggedInUser,
+    getAllTasks
   }
   ) => {
 
 
   //function for deleting user
   const deleteUser = () => {
-    fetch(`http://localhost:5000/users/${user.userId}`, {
+    fetch(`https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/user/${user.id}`, {
       method: 'DELETE',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('UserToken')
         }
     }).then(res => res.json())
     .then(data => {
       if(data.status === true) {
         alert(data.message);
         getAllUsers();
+        getAllTasks();
+        getTasksForLoggedInUser();
+      }
+      else {
+        alert(data.message);
       }
     })
   }
@@ -38,7 +46,8 @@ const User = (
   const editUser = () => {
     setUserModalState('edit');
     setCreateUserModal(true)
-    setEditingUserId(user.userId);
+    setEditingUserId(user.id);
+    console.log(user.id)
   }
 
 

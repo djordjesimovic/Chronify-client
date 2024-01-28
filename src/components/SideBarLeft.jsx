@@ -38,9 +38,9 @@ const SideBarLeft = ({filter, setFilter, category, setCategory, openMenuState, s
     //setUserInitial(userForTask[0].firstName.charAt(0))
   }
 
-  useEffect(() => {
-    setUserForTask()
-  }, [])
+  // useEffect(() => {
+  //   setUserForTask()
+  // }, [])
 
   return (
     <div className={`overflow-y-scroll h-full w-56 sm:w-56 md:w-56 lg:w-1/6 p-2 pt-7 font-nunito ${openMenuState} lg:flex md:${openMenuState} sm:${openMenuState} flex-col justify-between absolute sm:absolute md:absolute lg:relative top-0 left-0 z-20 bg-light-black`}>

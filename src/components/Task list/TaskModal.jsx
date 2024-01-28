@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import moveToFirst from '../../utils/MoveToFirst';
-import { date, currentDay, currentMonth, currentYear } from '../../utils/Date';
 
 const TaskModal = (
     {
@@ -23,7 +21,9 @@ const TaskModal = (
         getTasksForLoggedInUser,
         editingTaskId,
         setEditingTaskId,
-        getAllTasks
+        getAllTasks,
+        assignedToUser,
+        setAssignedToUser
     }
 ) => {
 
@@ -51,29 +51,32 @@ const TaskModal = (
             setTaskCreated(false)
         }
         else {
-            const currDate = `${currentYear}-${currentMonth + 1}-${currentDay}`
             if (taskModalState === 'create') {
-                fetch('http://localhost:5000/insertTask', {
+                fetch('https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task', {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('UserToken')
                     },
                     body: JSON.stringify(
                         {
-                            userId: taskAssignedToUser, // Replace with the actual user ID
+                            user_id: taskAssignedToUser, // Replace with the actual user ID
                             task: currentTask,
                             taskInfo: currentTaskInfo,
                             taskDeadline: currentTaskDeadline, // Replace with the actual deadline
                             taskImportance: currentTaskImportance,
                             taskCompleted: false,
                             taskInProgress: false,
-                            taskDate: currDate.toString(),
                             taskApproved: false
                         }
                     ),
-                }).then(res => res.json()).then(data => {
-                    if (data.status === true) {
+                })
+                .then(res => {
+                    return res.json();
+                })
+                .then(data => {
+                    if(data.status && data.status === true) {
                         setCurrentTask('');
                         setCurrentTaskInfo('');
                         setCurrentTaskDeadline('');
@@ -93,14 +96,14 @@ const TaskModal = (
             }
             else if (taskModalState === 'edit') {
                 //Ima mali problem sa osvezavanjem vrednosti polja za korisnika kome se dodeljuje zadatak
-                fetch(`http://localhost:5000/tasks/${editingTaskId}`, {
-                    method: 'PUT', // Use 'PUT' for update
+                fetch(`https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task/${editingTaskId}`, {
+                    method: 'PATCH', // Use 'PUT' for update
                     headers: {
                         'Content-Type': 'application/json',
-                        // Add any other headers you need (e.g., authorization token)
+                        'Authorization': localStorage.getItem('UserToken')
                     },
                     body: JSON.stringify({
-                        userId: taskAssignedToUser, // Replace with the actual user ID
+                        user_id: taskAssignedToUser, // Replace with the actual user ID
                         task: currentTask,
                         taskInfo: currentTaskInfo,
                         taskDeadline: currentTaskDeadline, // Replace with the actual deadline
@@ -109,6 +112,7 @@ const TaskModal = (
                 }).then(res => res.json())
                 .then(data => {
                     if(data.status === true) {
+                        // setAssignedToUser(data.user.username)
                         setCurrentTask('');
                         setCurrentTaskInfo('');
                         setCurrentTaskDeadline('');
@@ -142,7 +146,7 @@ const TaskModal = (
                 </div>
                 <div className='flex flex-row justify-between items-center w-full gap-1 text-sm'>
                     <label className='w-1/4 text-xs' htmlFor="deadline">Task Deadline</label>
-                    <input required className='border-gray-200 border-solid border w-3/4 outline-0 p-1' type="date" name='deadline' value={currentTaskDeadline} onChange={(e) => setCurrentTaskDeadline(e.target.value)} />
+                    <input min={new Date().toISOString().split('T')[0]} required className='border-gray-200 border-solid border w-3/4 outline-0 p-1' type="date" name='deadline' value={currentTaskDeadline} onChange={(e) => setCurrentTaskDeadline(e.target.value)} />
                 </div>
                 <div className='flex flex-row justify-between items-center w-full gap-1 text-sm'>
                     <label className='w-1/4 text-xs' htmlFor="task-importance">Choose Task Importance</label>
@@ -153,12 +157,12 @@ const TaskModal = (
                     </select>
                 </div>
                 <div className='flex flex-row justify-between items-center w-full gap-1 text-sm'>
-                    <label className='w-1/4 text-xs' htmlFor="asign-task-to">Asign Task To:</label>
-                    <select onChange={(e) => setTaskAssignedToUser(e.target.value)} required name='asign-task-to' className='border-gray-200 border-solid border w-3/4 outline-0 p-1'>
+                    <label className='w-1/4 text-xs' htmlFor="asign-task-to">Assign Task To:</label>
+                    <select onChange={(e) => setTaskAssignedToUser(e.target.value)} required name='assign-task-to' className='border-gray-200 border-solid border w-3/4 outline-0 p-1'>
                         <option value="" selected disabled={true} hidden={true}>Choose user</option>
                         {
                             usersList.map(user =>
-                                <option value={user.userId}>{user.email}</option>
+                                <option value={user.id}>{user.email}</option>
                             )
                         }
                     </select>

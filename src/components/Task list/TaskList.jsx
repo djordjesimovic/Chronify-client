@@ -12,7 +12,17 @@ const TaskList = (
       setTaskModalState,
       getAllTasks,
       category, 
-      usersList
+      usersList,
+      assignedToUser,
+      setAssignedToUser,
+      currentTask,
+      setCurrentTask,
+      currentTaskInfo,
+      setCurrentTaskInfo,
+      currentTaskDeadline,
+      currentTaskImportance,
+      setCurrentTaskImportance,
+      setCurrentTaskDeadline
     }
   ) => {
   filteredTasks.sort((a, b) => {
@@ -23,7 +33,7 @@ const TaskList = (
       {
         filteredTasks.length > 0 ? filteredTasks.map((task) => 
           <Task 
-            key={task.taskId} 
+            key={task.id} 
             task={task} 
             tasks={tasks} 
             setTasks={setTasks}
@@ -34,6 +44,16 @@ const TaskList = (
             getAllTasks={getAllTasks}
             category={category}
             usersList={usersList}
+            assignedToUser={assignedToUser}
+            setAssignedToUser={setAssignedToUser}
+            currentTask={currentTask}
+            setCurrentTask={setCurrentTask}
+            currentTaskInfo={currentTaskInfo}
+            setCurrentTaskInfo={setCurrentTaskInfo}
+            currentTaskDeadline={currentTaskDeadline}
+            setCurrentTaskDeadline={setCurrentTaskDeadline}
+            currentTaskImportance={currentTaskImportance}
+            setCurrentTaskImportance={setCurrentTaskImportance}
           />
         ) : <span className='font-roboto text-xs font-bold'>No Tasks</span>
       }

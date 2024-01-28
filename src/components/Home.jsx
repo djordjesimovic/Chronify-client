@@ -2,17 +2,18 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import SidebarLeft from './SideBarLeft';
-import SidebarRight from './SideBarRight';
 import TaskMain from './Task list/TaskMain';
-import MeetingsMain from './meetings/MeetingsMain';
 import UsersMain from './users/UsersMain';
 import AllTasks from './Task list/AllTasks';
-import AllMeetings from './meetings/AllMeetings';
 import Create from './Create';
 
 const Home = ({ userType, setUserType, loggedUser, setLoggedUser }) => {
 
-   const navigate = useNavigate();
+  if (localStorage.getItem('UserLoggedIn' === 'true')) {
+
+  }
+
+  const navigate = useNavigate();
 
   //States for tasks and categories
   const [tasks, setTasks] = useState([]);
@@ -27,10 +28,10 @@ const Home = ({ userType, setUserType, loggedUser, setLoggedUser }) => {
   const [tasksInProgress, setTasksInProgress] = useState([]);
 
   //All tasks for admin
-  const[allTasks, setAllTasks] = useState([]);
-  const[allTasksError, setAllTasksError] = useState('');
-  const[approvedTasks, setApprovedTasks] = useState([]);
-  const[allCompletedTasks, setAllCompletedTasks] = useState([]);
+  const [allTasks, setAllTasks] = useState([]);
+  const [allTasksError, setAllTasksError] = useState('');
+  const [approvedTasks, setApprovedTasks] = useState([]);
+  const [allCompletedTasks, setAllCompletedTasks] = useState([]);
 
 
 
@@ -52,7 +53,9 @@ const Home = ({ userType, setUserType, loggedUser, setLoggedUser }) => {
   const [userModalState, setUserModalState] = useState('');
   const [editingUserId, setEditingUserId] = useState('');
 
-  const[openMenuState, setOpenMenuState] = useState('hidden');
+  const [openMenuState, setOpenMenuState] = useState('hidden');
+
+  const [assignedToUser, setAssignedToUser] = useState('');
 
 
   useEffect(() => {
@@ -60,94 +63,114 @@ const Home = ({ userType, setUserType, loggedUser, setLoggedUser }) => {
   }, [tasks, filter])
 
   useEffect(() => {
-    setUserType(localStorage.getItem('UserType'));
-    getAllUsers();
-    getTasksForLoggedInUser();
-    getAllTasks();
-  }, [])
-
-  const checkUserLogIn = () => {
-    if(localStorage.getItem('UserLoggedIn') !== 'true') {
-    navigate('/', { replace: true });
+    if (localStorage.getItem('UserLoggedIn') === 'true') {
+      setUserType(localStorage.getItem('UserType'));
+      getAllUsers();
+      getTasksForLoggedInUser();
+      getAllTasks();
     }
-  }
-
+    else {
+      navigate('/', { replace: true });
+    }
+  }, [])
 
   //Function for getting All users
   const getAllUsers = () => {
-    fetch('http://localhost:5000/getAllUsers')
+    fetch('https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('UserToken')
+      },
+    })
       .then(res => res.json())
       .then(data => {
-        setUsersList(data.users)
+        setUsersList(data)
       });
   }
 
   //Function for getting tasks for logged in user
   const getTasksForLoggedInUser = () => {
     const loggedInUserId = localStorage.getItem('userId');
-    fetch(`http://localhost:5000/tasks/${loggedInUserId}`, {
+    fetch(`https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/user/${loggedInUserId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('UserToken')
       },
-    }).then(res => res.json()).then(data => {
-      if(data.status === true) {
-        //If request is good first empty both arrays and then map over the array from response and make two arrays
-        setCompletedTasks([]);
-        setTasks([]);
-        setTasksInProgress([]);
-        data.tasks.map(task => {
-          if(task.taskCompleted === 1) {
-            return (
-              setCompletedTasks((completedTasks) => [...completedTasks, task])
-            )
-          }
-          else if(task.taskInProgress === 1) {
-            return(
-              setTasksInProgress((tasksInProgress) => [...tasksInProgress, task])
-            )
-          }
-          else {
-            return  (
-              setTasks((tasks) => [...tasks, task])
-            )
-          }
-      })
-      }
+    }).then(res => {
+      return res.json();
     })
+      .then(data => {
+        if (data.status === true) {
+          setCompletedTasks([]);
+          setTasks([]);
+          setTasksInProgress([]);
+          setLoggedUser(
+            {
+              id: data.user.id,
+              firstName: data.user.firstName,
+              lastName: data.user.lastName,
+              email: data.user.email,
+              username: data.user.username
+            });
+          data.user.userTasks.map(task => {
+            if (task.taskCompleted === true) {
+              return (
+                setCompletedTasks((completedTasks) => [...completedTasks, task])
+              )
+            }
+            else if (task.taskInProgress === true) {
+              return (
+                setTasksInProgress((tasksInProgress) => [...tasksInProgress, task])
+              )
+            }
+            else {
+              return (
+                setTasks((tasks) => [...tasks, task])
+              )
+            }
+          })
+        }
+      })
   }
 
-  //Function for getting tasks for all users
+  //Function for getting tasks for all tasks
   const getAllTasks = () => {
-    fetch('http://localhost:5000/tasks')
-    .then(res => res.json())
-    .then(data => {
-      if(data.status === true) {
-        setAllTasks([]);
-        setApprovedTasks([]);
-        setAllCompletedTasks([])
-        data.tasks.map((task) => {
-          if(task.taskCompleted === 1 && task.taskApproved === 0) {
-            return(
-              setAllCompletedTasks((approvedTasks) => [...approvedTasks, task])
-            )
-          }
-          else if(task.taskCompleted === 1 && task.taskApproved === 1) {
-            return(
-              setApprovedTasks((tasks) => [...tasks, task])
-            )
-          }
-          else {
-            return(
-              setAllTasks((tasks) => [...tasks, task])
-            )
-          }
-        })
-      }
-      else {
-        setAllTasksError(data.message);
-      }
+    fetch('https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('UserToken')
+      },
     })
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        if (data.status === true) {
+          setAllTasks([]);
+          setApprovedTasks([]);
+          setAllCompletedTasks([])
+          data.tasks.map((task) => {
+            if (task.taskCompleted === true && task.taskApproved === false) {
+              return (
+                setAllCompletedTasks((approvedTasks) => [...approvedTasks, task])
+              )
+            }
+            else if (task.taskCompleted === true && task.taskApproved === true) {
+              return (
+                setApprovedTasks((tasks) => [...tasks, task])
+              )
+            }
+            else {
+              return (
+                setAllTasks((tasks) => [...tasks, task])
+              )
+            }
+          })
+        }
+      })
   }
 
 
@@ -163,13 +186,13 @@ const Home = ({ userType, setUserType, loggedUser, setLoggedUser }) => {
       setFilteredTasks(tasks);
     }
     else if (filter === '1') {
-      setFilteredTasks(tasks.filter(task => task.taskImportance === 1))
+      setFilteredTasks(tasks.filter(task => task.taskImportance === '1'))
     }
     else if (filter === '2') {
-      setFilteredTasks(tasks.filter(task => task.taskImportance === 2))
+      setFilteredTasks(tasks.filter(task => task.taskImportance === '2'))
     }
     else if (filter === '3') {
-      setFilteredTasks(tasks.filter(task => task.taskImportance === 3))
+      setFilteredTasks(tasks.filter(task => task.taskImportance === '3'))
     }
   }
 
@@ -212,7 +235,9 @@ const Home = ({ userType, setUserType, loggedUser, setLoggedUser }) => {
             currentTaskInfo={currentTaskInfo}
             setCurrentTaskInfo={setCurrentTaskInfo}
             currentTaskDeadline={currentTaskDeadline}
+            setCurrentTaskDeadline={setCurrentTaskDeadline}
             currentTaskImportance={currentTaskImportance}
+            setCurrentTaskImportance={setCurrentTaskImportance}
             getTasksForLoggedInUser={getTasksForLoggedInUser}
             getAllTasks={getAllTasks}
 
@@ -224,54 +249,55 @@ const Home = ({ userType, setUserType, loggedUser, setLoggedUser }) => {
             category={category}
             openMenuState={openMenuState}
             setOpenMenuState={setOpenMenuState}
-          /> :
-            category === 'meetings' ?
-              <MeetingsMain 
-                userType={userType} 
-                setUserType={setUserType} 
-              />
+            assignedToUser={assignedToUser}
+            setAssignedToUser={setAssignedToUser}
+          />
+          :
+          category === 'users' ?
+            <UsersMain
+              userType={userType}
+              setUserType={setUserType}
+              createUserModal={createUserModal}
+              setCreateUserModal={setCreateUserModal}
+              firstName={firstName}
+              setFirstName={setFirstName}
+              lastName={lastName}
+              setLastName={setLastName}
+              username={username}
+              setUsername={setUsername}
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+              newUserType={newUserType}
+              setNewUserType={setNewUserType}
+              usersList={usersList}
+              setUsersList={setUsersList}
+              getAllUsers={getAllUsers}
+              userModalState={userModalState}
+              setUserModalState={setUserModalState}
+              editingUserId={editingUserId}
+              setEditingUserId={setEditingUserId}
+              openMenuState={openMenuState}
+              setOpenMenuState={setOpenMenuState}
+              getTasksForLoggedInUser={getTasksForLoggedInUser}
+              getAllTasks={getAllTasks}
+            />
             :
-            category === 'users' ?
-              <UsersMain
-                userType={userType}
-                setUserType={setUserType}
-                createUserModal={createUserModal}
-                setCreateUserModal={setCreateUserModal}
-                firstName={firstName}
-                setFirstName={setFirstName}
-                lastName={lastName}
-                setLastName={setLastName}
-                username={username}
-                setUsername={setUsername}
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                newUserType={newUserType}
-                setNewUserType={setNewUserType}
-                usersList={usersList}
-                setUsersList={setUsersList}
-                getAllUsers={getAllUsers}
-                userModalState={userModalState}
-                setUserModalState={setUserModalState}
-                editingUserId={editingUserId}
-                setEditingUserId={setEditingUserId}
-                openMenuState={openMenuState}
-                setOpenMenuState={setOpenMenuState}
-              /> 
-              :
-              category === 'allTasks' ?
-              <AllTasks 
-                allTasks={allTasks} 
-                setAllTasks={setAllTasks} 
-                allTasksError={allTasksError} 
-                setAllTasksError={setAllTasksError} 
+            category === 'allTasks' ?
+              <AllTasks
+                allTasks={allTasks}
+                setAllTasks={setAllTasks}
+                allTasksError={allTasksError}
+                setAllTasksError={setAllTasksError}
                 setEditingTaskId={setEditingTaskId}
                 getTasksForLoggedInUser={getTasksForLoggedInUser}
                 getAllTasks={getAllTasks}
                 setModalVisible={setModalVisible}
                 setTaskModalState={setTaskModalState}
-
+                tasks={tasks}
+                setTasks={setTasks}
+                setUsersList={setUsersList}
                 modalVisible={modalVisible}
                 currentTask={currentTask}
                 setCurrentTask={setCurrentTask}
@@ -293,62 +319,61 @@ const Home = ({ userType, setUserType, loggedUser, setLoggedUser }) => {
                 setAllCompletedTasks={setAllCompletedTasks}
                 openMenuState={openMenuState}
                 setOpenMenuState={setOpenMenuState}
-              /> 
-              : 
-              category === 'allMeetings' ?
-              <AllMeetings /> : 
-              category === 'new' ? 
-              <Create 
-                modalVisible={modalVisible}
-                setModalVisible={setModalVisible}
-                setTaskModalState={setTaskModalState}
-                tasks={tasks}
-                setTasks={setTasks}
-                filteredTasks={filteredTasks}
-                setFilteredTasks={setFilteredTasks}
-                currentTask={currentTask}
-                setCurrentTask={setCurrentTask}
-                currentTaskInfo={currentTaskInfo}
-                setCurrentTaskInfo={setCurrentTaskInfo}
-                currentTaskDeadline={currentTaskDeadline}
-                setCurrentTaskDeadline={setCurrentTaskDeadline}
-                currentTaskImportance={currentTaskImportance}
-                setCurrentTaskImportance={setCurrentTaskImportance}
-                getTasksForLoggedInUser={getTasksForLoggedInUser}
-                editingTaskId={editingTaskId}
-                setEditingTaskId={setEditingTaskId}
+                assignedToUser={assignedToUser}
+                setAssignedToUser={setAssignedToUser}
+              />
+              :
+              category === 'new' ?
+                <Create
+                  modalVisible={modalVisible}
+                  setModalVisible={setModalVisible}
+                  setTaskModalState={setTaskModalState}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                  filteredTasks={filteredTasks}
+                  setFilteredTasks={setFilteredTasks}
+                  currentTask={currentTask}
+                  setCurrentTask={setCurrentTask}
+                  currentTaskInfo={currentTaskInfo}
+                  setCurrentTaskInfo={setCurrentTaskInfo}
+                  currentTaskDeadline={currentTaskDeadline}
+                  setCurrentTaskDeadline={setCurrentTaskDeadline}
+                  currentTaskImportance={currentTaskImportance}
+                  setCurrentTaskImportance={setCurrentTaskImportance}
+                  getTasksForLoggedInUser={getTasksForLoggedInUser}
+                  editingTaskId={editingTaskId}
+                  setEditingTaskId={setEditingTaskId}
 
-                usersList={usersList}
-                setUsersList={setUsersList}
-                taskAssignedToUser={taskAssignedToUser}
-                setTaskAssignedToUser={setTaskAssignedToUser}
-                taskModalState={taskModalState}
-                createUserModal={createUserModal}
-                setCreateUserModal={setCreateUserModal}
-                firstName={firstName}
-                setFirstName={setFirstName}
-                lastName={lastName}
-                setLastName={setLastName}
-                username={username}
-                setUsername={setUsername}
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                getAllUsers={getAllUsers}
-                userModalState={userModalState}
-                setUserModalState={setUserModalState}
-                editingUserId={editingUserId}
-                setEditingUserId={setEditingUserId}
-                setNewUserType={setNewUserType}
-                newUserType={newUserType}
-                getAllTasks={getAllTasks}
-                openMenuState={openMenuState}
-                setOpenMenuState={setOpenMenuState}
-              /> : null
+                  usersList={usersList}
+                  setUsersList={setUsersList}
+                  taskAssignedToUser={taskAssignedToUser}
+                  setTaskAssignedToUser={setTaskAssignedToUser}
+                  taskModalState={taskModalState}
+                  createUserModal={createUserModal}
+                  setCreateUserModal={setCreateUserModal}
+                  firstName={firstName}
+                  setFirstName={setFirstName}
+                  lastName={lastName}
+                  setLastName={setLastName}
+                  username={username}
+                  setUsername={setUsername}
+                  email={email}
+                  setEmail={setEmail}
+                  password={password}
+                  setPassword={setPassword}
+                  getAllUsers={getAllUsers}
+                  userModalState={userModalState}
+                  setUserModalState={setUserModalState}
+                  editingUserId={editingUserId}
+                  setEditingUserId={setEditingUserId}
+                  setNewUserType={setNewUserType}
+                  newUserType={newUserType}
+                  getAllTasks={getAllTasks}
+                  openMenuState={openMenuState}
+                  setOpenMenuState={setOpenMenuState}
+                /> : null
 
       }
-      {/* <SidebarRight /> */}
     </div>
   );
 }

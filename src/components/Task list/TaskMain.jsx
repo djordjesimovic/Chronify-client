@@ -30,13 +30,23 @@ const Main = (
         tasksInProgress,
         category,
         openMenuState,
-        setOpenMenuState
-      }) => {
+        setOpenMenuState,
+        assignedToUser,
+        setAssignedToUser,
+        currentTask,
+        setCurrentTask,
+        currentTaskInfo,
+        setCurrentTaskInfo,
+        currentTaskDeadline,
+        currentTaskImportance,
+        setCurrentTaskImportance,
+        setCurrentTaskDeadline
+  }) => {
   
-  const [currentTask, setCurrentTask] = useState('');
-  const [currentTaskInfo, setCurrentTaskInfo] = useState('');
-  const [currentTaskDeadline, setCurrentTaskDeadline] = useState('');
-  const [currentTaskImportance, setCurrentTaskImportance] = useState('1');
+  // const [currentTask, setCurrentTask] = useState('');
+  // const [currentTaskInfo, setCurrentTaskInfo] = useState('');
+  // const [currentTaskDeadline, setCurrentTaskDeadline] = useState('');
+  // const [currentTaskImportance, setCurrentTaskImportance] = useState('1');
   // const [editingTaskId, setEditingTaskId] = useState('');
 
   const openModal = () => {
@@ -98,6 +108,16 @@ const Main = (
             getAllTasks={getAllTasks}
             category={category}
             usersList={usersList}
+            assignedToUser={assignedToUser}
+            setAssignedToUser={setAssignedToUser}
+            currentTask={currentTask}
+            setCurrentTask={setCurrentTask}
+            currentTaskInfo={currentTaskInfo}
+            setCurrentTaskInfo={setCurrentTaskInfo}
+            currentTaskDeadline={currentTaskDeadline}
+            setCurrentTaskDeadline={setCurrentTaskDeadline}
+            currentTaskImportance={currentTaskImportance}
+            setCurrentTaskImportance={setCurrentTaskImportance}
           />
         </div>
         <div className='w-full sm:w-full md:w-1/3 lg:w-1/3 h-64 sm:h-64 md:h-full lg:h-full py-4 flex flex-col justify-start items-center bg-white'>
@@ -113,6 +133,16 @@ const Main = (
             getAllTasks={getAllTasks}
             category={category}
             usersList={usersList}
+            assignedToUser={assignedToUser}
+            setAssignedToUser={setAssignedToUser}
+            currentTask={currentTask}
+            setCurrentTask={setCurrentTask}
+            currentTaskInfo={currentTaskInfo}
+            setCurrentTaskInfo={setCurrentTaskInfo}
+            currentTaskDeadline={currentTaskDeadline}
+            setCurrentTaskDeadline={setCurrentTaskDeadline}
+            currentTaskImportance={currentTaskImportance}
+            setCurrentTaskImportance={setCurrentTaskImportance}
           />
         </div>
         <div className='w-full sm:w-full md:w-1/3 lg:w-1/3 h-64 sm:h-64 md:h-full lg:h-full py-4 flex flex-col justify-start items-center bg-white'>
@@ -128,9 +158,45 @@ const Main = (
             getAllTasks={getAllTasks}
             category={category}
             usersList={usersList}
+            assignedToUser={assignedToUser}
+            setAssignedToUser={setAssignedToUser}
+            currentTask={currentTask}
+            setCurrentTask={setCurrentTask}
+            currentTaskInfo={currentTaskInfo}
+            setCurrentTaskInfo={setCurrentTaskInfo}
+            currentTaskDeadline={currentTaskDeadline}
+            setCurrentTaskDeadline={setCurrentTaskDeadline}
+            currentTaskImportance={currentTaskImportance}
+            setCurrentTaskImportance={setCurrentTaskImportance}
           />
         </div>
       </div>
+      <TaskModal 
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        tasks={tasks}
+        setTasks={setTasks}
+        currentTask={currentTask}
+        setCurrentTask={setCurrentTask}
+        currentTaskInfo={currentTaskInfo}
+        setCurrentTaskInfo={setCurrentTaskInfo}
+        currentTaskDeadline={currentTaskDeadline}
+        setCurrentTaskDeadline={setCurrentTaskDeadline}
+        currentTaskImportance={currentTaskImportance}
+        setCurrentTaskImportance={setCurrentTaskImportance}
+        usersList={usersList}
+        setUsersList={setUsersList}
+        taskAssignedToUser={taskAssignedToUser}
+        setTaskAssignedToUser={setTaskAssignedToUser}
+        taskModalState={taskModalState}
+        setTaskModalState={setTaskModalState}
+        getTasksForLoggedInUser={getTasksForLoggedInUser}
+        editingTaskId={editingTaskId}
+        setEditingTaskId={setEditingTaskId}
+        getAllTasks={getAllTasks}
+        assignedToUser={assignedToUser}
+        setAssignedToUser={setAssignedToUser}
+      />
     </div>
   )
 }

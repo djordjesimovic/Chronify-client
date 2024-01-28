@@ -36,7 +36,12 @@ const AllTasks = (
     allCompletedTasks,
     setAllCompletedTasks,
     openMenuState,
-    setOpenMenuState
+    setOpenMenuState,
+    tasks,
+    setTasks,
+    setUsersList,
+    assignedToUser,
+    setAssignedToUser
   }
 ) => {
 
@@ -76,6 +81,16 @@ const AllTasks = (
                       setTaskModalState={setTaskModalState}
                       category={category}
                       usersList={usersList}
+                      assignedToUser={assignedToUser}
+                      setAssignedToUser={setAssignedToUser}
+                      currentTask={currentTask}
+                      setCurrentTask={setCurrentTask}
+                      currentTaskInfo={currentTaskInfo}
+                      setCurrentTaskInfo={setCurrentTaskInfo}
+                      currentTaskDeadline={currentTaskDeadline}
+                      setCurrentTaskDeadline={setCurrentTaskDeadline}
+                      currentTaskImportance={currentTaskImportance}
+                      setCurrentTaskImportance={setCurrentTaskImportance}
                     />
                   )
                 }) : <span>{allTasksError}</span>
@@ -101,6 +116,16 @@ const AllTasks = (
                       setTaskModalState={setTaskModalState}
                       category={category}
                       usersList={usersList}
+                      assignedToUser={assignedToUser}
+                      setAssignedToUser={setAssignedToUser}
+                      currentTask={currentTask}
+                      setCurrentTask={setCurrentTask}
+                      currentTaskInfo={currentTaskInfo}
+                      setCurrentTaskInfo={setCurrentTaskInfo}
+                      currentTaskDeadline={currentTaskDeadline}
+                      setCurrentTaskDeadline={setCurrentTaskDeadline}
+                      currentTaskImportance={currentTaskImportance}
+                      setCurrentTaskImportance={setCurrentTaskImportance}
                     />
                   )
                 }) : <span>{allTasksError}</span>
@@ -126,11 +151,47 @@ const AllTasks = (
                       setTaskModalState={setTaskModalState}
                       category={category}
                       usersList={usersList}
+                      assignedToUser={assignedToUser}
+                      setAssignedToUser={setAssignedToUser}
+                      currentTask={currentTask}
+                      setCurrentTask={setCurrentTask}
+                      currentTaskInfo={currentTaskInfo}
+                      setCurrentTaskInfo={setCurrentTaskInfo}
+                      currentTaskDeadline={currentTaskDeadline}
+                      setCurrentTaskDeadline={setCurrentTaskDeadline}
+                      currentTaskImportance={currentTaskImportance}
+                      setCurrentTaskImportance={setCurrentTaskImportance}
                     />
                   )
                 }) : <span>{allTasksError}</span>
             }
           </div>
+          <TaskModal 
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            tasks={tasks}
+            setTasks={setTasks}
+            currentTask={currentTask}
+            setCurrentTask={setCurrentTask}
+            currentTaskInfo={currentTaskInfo}
+            setCurrentTaskInfo={setCurrentTaskInfo}
+            currentTaskDeadline={currentTaskDeadline}
+            setCurrentTaskDeadline={setCurrentTaskDeadline}
+            currentTaskImportance={currentTaskImportance}
+            setCurrentTaskImportance={setCurrentTaskImportance}
+            usersList={usersList}
+            setUsersList={setUsersList}
+            taskAssignedToUser={taskAssignedToUser}
+            setTaskAssignedToUser={setTaskAssignedToUser}
+            taskModalState={taskModalState}
+            setTaskModalState={setTaskModalState}
+            getTasksForLoggedInUser={getTasksForLoggedInUser}
+            editingTaskId={editingTaskId}
+            setEditingTaskId={setEditingTaskId}
+            getAllTasks={getAllTasks}
+            assignedToUser={assignedToUser}
+            setAssignedToUser={setAssignedToUser}
+          />
         </div>
       </div>
     </div>

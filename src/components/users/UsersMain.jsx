@@ -30,7 +30,9 @@ const usersMain = (
     editingUserId,
     setEditingUserId,
     openMenuState,
-    setOpenMenuState
+    setOpenMenuState,
+    getTasksForLoggedInUser,
+    getAllTasks
   }) => {
 
   // const openUserModal = () => {
@@ -64,6 +66,8 @@ const usersMain = (
         setCreateUserModal={setCreateUserModal}
         editingUserId={editingUserId}
         setEditingUserId={setEditingUserId}
+        getTasksForLoggedInUser={getTasksForLoggedInUser}
+        getAllTasks={getAllTasks}
       />
       <CreateUser
         createUserModal={createUserModal}

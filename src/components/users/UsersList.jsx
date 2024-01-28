@@ -12,7 +12,9 @@ const usersList = (
     createUserModal, 
     setCreateUserModal, 
     editingUserId, 
-    setEditingUserId
+    setEditingUserId,
+    getTasksForLoggedInUser,
+    getAllTasks
   }) => {
   return (
     <div className='flex flex-wrap flex-row sm:flex-row md:flex-row lg:flex-row justify-center items-center w-full h-full mt-2  gap-7'>
@@ -29,6 +31,8 @@ const usersList = (
             setCreateUserModal={setCreateUserModal} 
             editingUserId={editingUserId}
             setEditingUserId={setEditingUserId}
+            getTasksForLoggedInUser={getTasksForLoggedInUser}
+            getAllTasks={getAllTasks}
           />
         ) : 
         <span>There are no users</span>

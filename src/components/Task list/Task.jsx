@@ -15,17 +15,29 @@ const Task = (
       setTaskModalState,
       getAllTasks,
       category,
-      usersList
+      usersList,
+      assignedToUser,
+      setAssignedToUser,
+      currentTask,
+      setCurrentTask,
+      currentTaskInfo,
+      setCurrentTaskInfo,
+      currentTaskDeadline,
+      currentTaskImportance,
+      setCurrentTaskImportance,
+      setCurrentTaskDeadline
     }
   ) => {
-  
 
+    console.log(task)
+  
+    //https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task/{task_id}/complete
   const completeTaskHandler = () => {
-    fetch(`http://localhost:5000/tasks/${task.taskId}/complete`, {
+    fetch(`https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task/${task.id}/complete`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        // Add any other headers you need (e.g., authorization token)
+        'Authorization': localStorage.getItem('UserToken')
       },
     }).then(res => res.json()).then(data => {
       if(data.status === true) {
@@ -38,14 +50,13 @@ const Task = (
       }
     })
   }
-
   const deleteTaskHandler = () => {
     // setTasks(tasks.filter(el => el.taskId !== task.taskId))
-    fetch(`http://localhost:5000/tasks/${task.taskId}`, {
+    fetch(`https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task/${task.id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        // Add any other headers you need (e.g., authorization token)
+        'Authorization': localStorage.getItem('UserToken')
       },
     })
     .then(res => res.json()).then(data => {
@@ -61,18 +72,21 @@ const Task = (
   }
 
   const editTaskHandler = () => {
-     setModalVisible(true);
-     setTaskModalState('edit');
-     setEditingTaskId(task.taskId)
-    // console.log(editingTaskId)
+    setModalVisible(true);
+    setTaskModalState('edit');
+    setEditingTaskId(task.id)
+    setCurrentTask(task.task)
+    setCurrentTaskInfo(task.taskInfo);
+    setCurrentTaskImportance(task.taskImportance);
+    setCurrentTaskDeadline(task.taskDeadline)
   }
 
   const inProgressHandler = () => {
-    fetch(`http://localhost:5000/tasks/${task.taskId}/toggle-progress`, {
+    fetch(`https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task/${task.id}/toggle-progress`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        // Add any other headers you need (e.g., authorization token)
+        'Authorization': localStorage.getItem('UserToken')
       },
     }).then(res => res.json()).then(data => {
       if(data.status === true) {
@@ -81,13 +95,13 @@ const Task = (
       }
     })
   }
-
+//https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task/{task_id}/approve
   const approveTaskHandler = () => {
-    fetch(`http://localhost:5000/tasks/${task.taskId}/approve`, {
+    fetch(`https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/task/${task.id}/approve`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        // Add any other headers you need (e.g., authorization token)
+        'Authorization': localStorage.getItem('UserToken')
       },
     }).then(res => res.json()).then(data => {
       if(data.status === true) {
@@ -104,35 +118,24 @@ const Task = (
   const originalDate = new Date(task.taskDeadline);
   const formattedDate = `${originalDate.getFullYear()}-${(originalDate.getMonth() + 1).toString().padStart(2, '0')}-${originalDate.getDate().toString().padStart(2, '0')}`;
 
-  const originalTaskCreateDate = new Date(task.taskDate);
+  const originalTaskCreateDate = new Date(task.created_at);
   const formatedOriginalTaskCreateDate = `${originalTaskCreateDate.getFullYear()}-${(originalTaskCreateDate.getMonth() + 1).toString().padStart(2, '0')}-${originalTaskCreateDate.getDate().toString().padStart(2, '0')}`;
-
-  const [assignedToUser, setAssignedToUser] = useState('');
-
-  const setUserForTask = () => {
-    const userForTask = usersList.filter(user => user.userId === task.userId)
-    setAssignedToUser(userForTask[0].username)
-  }
-
-  useEffect(() => {
-    setUserForTask()
-  }, [])
 
   return (
     <div className='w-full'>
-      <div className={`border-solid border rounded-2xl relative flex align-center justify-between flex-col w-full px-6 py-3 text-black ${task.taskCompleted === 1 && category !== 'allTasks' ? "bg-slate-400" : task.taskImportance === 1 ? "bg-high-importance" : task.taskImportance === 2 ? "bg-mid-importance" : task.taskImportance === 3 ? "bg-low-importance" : ""}`}>
+      <div className={`border-solid border rounded-2xl relative flex align-center justify-between flex-col w-full px-6 py-3 text-black ${task.taskCompleted === true && category !== 'allTasks' ? "bg-slate-400" : task.taskImportance === '1' ? "bg-high-importance" : task.taskImportance === '2' ? "bg-mid-importance" : task.taskImportance === '3' ? "bg-low-importance" : ""}`}>
         <div className='flex flex-row justify-between w-full'>
           <div className='flex flex-col gap-3'>
-            <h1 className={`text-base font-bold ${task.taskCompleted === 1 && category !== 'allTasks' ? "line-through" : ""}`}>{task.task}</h1>
+            <h1 className={`text-base font-bold ${task.taskCompleted === true && category !== 'allTasks' ? "line-through" : ""}`}>{task.task}</h1>
             <h3 className='text-sm'>{task.taskInfo}</h3>
             <span className='text-sm'>Deadline: {formattedDate}</span>
             <div>
               <span className='text-sm'>Importance: </span>
-              <span className={`${task.taskImportance === 1 ? "text-red-600" : task.taskImportance === 2 ? "text-amber-600" : task.taskImportance === 3 ? "text-green-600" : ""} font-bold`}>{task.taskImportance}</span>
+              <span className={`${task.taskImportance === '1' ? "text-red-600" : task.taskImportance === '2' ? "text-amber-600" : task.taskImportance === '3' ? "text-green-600" : ""} font-bold`}>{task.taskImportance}</span>
             </div>
           </div>
           {
-            task.taskCompleted !== 1 && task.taskInProgress !== 1 ?
+            task.taskCompleted !== true && task.taskInProgress !== true ?
             <div className='flex flex-col items-center justify-evenly p-3'>
               <button className={`${localStorage.getItem('UserType') === 'admin' ? "flex" : "hidden"}`} onClick={editTaskHandler}><img src={Edit}  alt='Edit Button' className='w-4'/></button>
               {/* <button onClick={completeTaskHandler}><img src={Complete}  alt='Complete Button' className='w-4'/></button> */}
@@ -144,26 +147,26 @@ const Task = (
           <span className='text-sm text-left mt-3 mr-1'>
             Assigned to:
           </span>
-          <span className='text-sm font-bold text-left mt-3'>{assignedToUser}</span>
+          <span className='text-sm font-bold text-left mt-3'>{(usersList.filter(user => user.id === task.user_id))[0].username}</span>
         </div>
         <span className='text-xs font-bold text-left mt-3'>Created on: {formatedOriginalTaskCreateDate}</span>
         {
-          task.taskCompleted !== 1 && task.taskInProgress !== 1 && category !== 'allTasks' ?
+          task.taskCompleted !== true && task.taskInProgress !== true && category !== 'allTasks' ?
           <div className='bg-yellow-400 flex flex-row justify-between items-center w-full mt-3'>
             <button onClick={inProgressHandler} className='px-2 py-2 bg-amber-300 text-white font-bold uppercase text-sm'>Start Task</button>
             <button onClick={completeTaskHandler} className='bg-lime-300 px-2 py-2 text-white font-bold uppercase text-sm'>Complete Task</button>
-          </div> : task.taskInProgress === 1 ? 
+          </div> : task.taskInProgress === true && category !== 'allTasks' ? 
           <div className='bg-yellow-400 flex flex-row justify-between items-center w-full mt-3'>
             <button onClick={inProgressHandler} className='px-2 py-2 bg-amber-300 text-white font-bold uppercase text-sm'>Pause Task</button>
             <button onClick={completeTaskHandler} className='bg-lime-300 px-2 py-2 text-white font-bold uppercase text-sm'>Complete Task</button>
           </div> : ''
         }
         {
-          task.taskCompleted === 1 && task.taskApproved === 0 && category === 'allTasks' ?
+          task.taskCompleted === true && task.taskApproved === false && category === 'allTasks' ?
           <button onClick={approveTaskHandler} className='bg-lime-300 px-2 py-2 mt-4 text-white font-bold uppercase text-sm'>Approve Task</button> : null
         }
         {
-          task.taskCompleted === 1 && task.taskApproved === 1 && category !== 'allTasks' ? 
+          task.taskCompleted === true && task.taskApproved === true && category !== 'allTasks' ? 
           <span className='font-bold text-sm text-lime-300 mt-3'>Task approved</span> : null
         }
       </div>

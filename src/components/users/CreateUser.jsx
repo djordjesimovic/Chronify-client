@@ -45,14 +45,15 @@ const CreateUser = (
 
   //function for handling registration
   const registerUser = () => {
-    console.log(newUserType)
+    // console.log(newUserType)
     if (userModalState === 'create') {
       if (firstName !== '' && firstName.length < 12 && lastName !== '' && lastName.length < 12 && username !== '' && username.length > 4 && email !== '' && password !== '' && password.length > 4 && password.length < 16) {
-        fetch('http://localhost:5000/register', {
+        fetch('https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/auth/signup', {
           method: 'POST',
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('UserToken')
           },
           body: JSON.stringify({
             'firstName': firstName,
@@ -62,9 +63,12 @@ const CreateUser = (
             'password': password,
             'userType': newUserType
           })
-        }).then(res => res.json()).then(data => {
-          if (data.status === 'true') {
-            setRegisterStatus(data.status);
+        })
+        .then(res => {
+          return(res.json())
+        }).then(data => {
+          if(data.status && data.status === true) {
+            setRegisterStatus(true);
             setRegisterMsg(data.message);
             getAllUsers();
             setFirstName('');
@@ -75,10 +79,13 @@ const CreateUser = (
             setNewUserType('user');
           }
           else {
-            setRegisterStatus('false');
-            setRegisterMsg(data.message)
+            setRegisterMsg(data.message);
           }
         })
+
+      }
+      else {
+        setRegisterMsg('Please insert all data correctly');
       }
     }
     else if(userModalState === 'edit') {
@@ -87,18 +94,18 @@ const CreateUser = (
         'lastName': lastName,
         'username': username,
         'email': email,
-        'password': password,
         'userType': newUserType
       }
-      fetch(`http://localhost:5000/users/${editingUserId}`, {
-          method: 'PUT',
+      //https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/user/{user_id}
+      fetch(`https://x8ki-letl-twmt.n7.xano.io/api:IUDlTwil/user/${editingUserId}`, {
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(updatedUser)
       }).then(res => res.json())
         .then(data => {
-          if(data.status === 'true'){
+          if(data.status === true){
             setRegisterMsg(data.message);
             setRegisterStatus(data.status);
             getAllUsers();
@@ -110,7 +117,7 @@ const CreateUser = (
             setNewUserType('user');
           }
           else {
-            setRegisterStatus('false');
+            setRegisterStatus(false);
             setRegisterMsg(data.message)
           }
         })
@@ -156,7 +163,7 @@ const CreateUser = (
           <button onClick={registerUser} className='px-3 py-2 bg-blue-700 text-white'>{userModalState === 'create' ? "Create user" : "Edit user"}</button>
           <button onClick={closeRegisterModal} className='px-3 py-2 bg-red-700 text-white'>Close</button>
         </div>
-        <span className={`text-xs font-bold ${registerStatus === 'true' ? "text-green-500" : "text-red-500"}`}>{registerMsg}</span>
+        <span className={`text-xs font-bold ${registerStatus === true ? "text-green-500" : "text-red-500"}`}>{registerMsg}</span>
       </div>
     </div>
   )
